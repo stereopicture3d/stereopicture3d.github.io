@@ -1,5 +1,4 @@
-// HTML5 Stereo Viewer Ver0.6(2020/05/20)
-// Add mirror mode(0.5 -> 0.6)
+// HTML5 Stereo Viewer Ver0.2(2014/02/08)
 // http://www.stereomaker.net/html5/viewer5/index.htm
 
 document.write(
@@ -88,7 +87,6 @@ document.write(
 "      <li><button id='button26' style='height:50px;width:120px;'>V_Int.</button></li> ",
 "      <li><button id='button27' style='height:50px;width:120px;'>Single</button></li> ",
 "      <li><button id='button28' style='height:50px;width:120px;'>SBS50</button></li> ",
-"      <li><button id='button35' style='height:50px;width:120px;'>Mirror</button></li> ",
 "    </ul>",
 "  </li>",
 "  <li><button id='button31'>Slide</button>",
@@ -132,11 +130,10 @@ document.write(
 "</div>"
 );
 
-var verno="Ver. 0.6";
+var verno="Ver. 0.5";
 var jet = new Image();
 var picindex1 = 0;
 var stype = 2;
-var nGap = 97;
 var nFull = 0;
 var nSwap = 0;
 var sshow = 0;
@@ -403,27 +400,12 @@ button29.onclick=function(){		//SPM_Ana.
 	draw();
 	}
 
-button35.onclick=function(){		//SPM_Ana.
-	stype=10;
-	draw();
-	}
-
 function KeyEvent(e){
     var Keynum;
     if(window.event) Keynum = e.keyCode;  // IE
     else if(e.which) Keynum = e.which;
     if(Keynum==13) {	//Enter : Full screen ON/OFF
 	toggleFullScreen();
-	}
-    else if(Keynum==87 || Keynum==38) {	//W or Up arrow : Mirror Gap wider
-	nGap--;
-	if(nGap<50) nGap=50;
-	draw();
-	}
-    else if(Keynum==78 || Keynum==40) {	//N or Down arrow : Mirror Gap narrower
-	nGap++;
-	if(nGap>100) nGap=100;
-	draw();
 	}
     else if(Keynum==32 || Keynum==39) {	//Space or Right arrow : Next image
 	picindex1 = (picindex1 + 1)%pics.length;
@@ -466,7 +448,7 @@ function KeyEvent(e){
 	nInterval=Keynum-96;
 	if(sshow==1) button31.innerHTML="On(" + nInterval + "S)";
 	}
-    // button0.innerHTML="" + Keynum;
+    //button0.innerHTML="" + Keynum;
   }
 
 
@@ -594,7 +576,6 @@ function draw(){
 	if(stype==7) button30.innerHTML="Single";
 	if(stype==8) button30.innerHTML="SBS50";
 	if(stype==9) button30.innerHTML="SPM";
-	if(stype==10) button30.innerHTML="Mirror";
 	button0.innerHTML="in progress ...";
 	setTimeout(draw2, 1);
 	}
@@ -616,7 +597,7 @@ function draw2(){
 	nCanwidth = nWinwidth;
 	nCanheight = nWinheight;
 
-	if(stype<2 || stype==10) nCanheight=nCanheight*2;
+	if(stype<2) nCanheight=nCanheight*2;
 
 	if(nCanwidth/nCanheight>nImgwidth/nImgheight){
 		nCanwidth=nCanheight*nImgwidth/nImgheight;
@@ -625,7 +606,7 @@ function draw2(){
 		nCanheight=nCanwidth*nImgheight/nImgwidth;
 		}
 	
-	if(stype<2 || stype==10) nCanheight=nCanheight/2;
+	if(stype<2) nCanheight=nCanheight/2;
 	if(stype==8 && nCanwidth < nWinwidth) nCanwidth = nWinwidth;
 
 	nCanwidth=Math.floor(nCanwidth*nzoom/100);
@@ -645,20 +626,6 @@ function draw2(){
 		else{
 			ctx1.drawImage(jet,0,0,nImgwidth,nImgheight,nCanwidth/2,0,nCanwidth/2,nCanheight);
 			ctx1.drawImage(jet,nImgwidth,0,nImgwidth,nImgheight,0,0,nCanwidth/2,nCanheight);
-			}
-		}
-	if(stype==10){		// 0:SBS Parallel-eyed  1:SBS Cross-eyed
-		if(nSwap==0){
-			ctx1.drawImage(jet,0,0,nImgwidth,nImgheight,0,0,nCanwidth*nGap/200,nCanheight*nGap/100);
-			ctx1.scale(-1,1);
-			ctx1.translate(-canvas1.width, 0);
-			ctx1.drawImage(jet,nImgwidth,0,nImgwidth,nImgheight,0,0,nCanwidth*nGap/200,nCanheight*nGap/100);
-			}
-		else{
-			ctx1.drawImage(jet,nImgwidth,0,nImgwidth,nImgheight,0,0,nCanwidth*nGap/200,nCanheight*nGap/100);
-			ctx1.scale(-1,1);
-			ctx1.translate(-canvas1.width, 0);
-			ctx1.drawImage(jet,0,0,nImgwidth,nImgheight,0,0,nCanwidth*nGap/200,nCanheight*nGap/100);
 			}
 		}
 	else if(stype==8){	//SBS 50%
